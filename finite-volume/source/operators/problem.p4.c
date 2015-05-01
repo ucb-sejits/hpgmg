@@ -67,6 +67,7 @@ void evaluateU(double x, double y, double z, double *U, double *Ux, double *Uy, 
 
 //------------------------------------------------------------------------------------------------------------------------------
 void initialize_problem(level_type * level, double hLevel, double a, double b){
+    printf("P4\n");
   level->h = hLevel;
 
   int box;

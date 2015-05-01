@@ -225,6 +225,56 @@ void print_decomposition(level_type *level){
   fflush(stdout);
 }
 
+void print_vector(level_type * level, int vector_id){
+    int block,s;
+//    PRAGMA_THREAD_ACROSS_BLOCKS(level,block,level->num_my_blocks)
+    for(block=0;block<level->num_my_blocks;block++){
+        const int box = level->my_blocks[block].read.box;
+        const int ilo = level->my_blocks[block].read.i;
+        const int jlo = level->my_blocks[block].read.j;
+        const int klo = level->my_blocks[block].read.k;
+        const int ihi = level->my_blocks[block].dim.i + ilo;
+        const int jhi = level->my_blocks[block].dim.j + jlo;
+        const int khi = level->my_blocks[block].dim.k + klo;
+        int i,j,k;
+        const int ghosts = level->box_ghosts;
+        const int jStride = level->my_boxes[box].jStride;
+        const int kStride = level->my_boxes[box].kStride;
+        const int     dim = level->my_boxes[box].dim;
+        const double h2inv = 1.0/(level->h*level->h);
+        const double * __restrict__ vector    = level->my_boxes[box].vectors[vector_id] + ghosts*(1+jStride+kStride);
+//        const double * __restrict__ alpha  = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
+//        const double * __restrict__ beta_i = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
+//        const double * __restrict__ beta_j = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
+//        const double * __restrict__ beta_k = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
+//        const double * __restrict__ valid  = level->my_boxes[box].vectors[VECTOR_VALID ] + ghosts*(1+jStride+kStride); // cell is inside the domain
+//#ifdef USE_L1JACOBI
+//        const double * __restrict__ lambda = level->my_boxes[box].vectors[VECTOR_L1INV ] + ghosts*(1+jStride+kStride);
+//#else
+//        const double * __restrict__ lambda = level->my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride);
+//#endif
+//        const double * __restrict__ x_n;
+//        double * __restrict__ x_np1;
+//        if((s&1)==0){x_n   = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride);
+//            x_np1 = level->my_boxes[box].vectors[VECTOR_TEMP  ] + ghosts*(1+jStride+kStride);}
+//        else{x_n   = level->my_boxes[box].vectors[VECTOR_TEMP  ] + ghosts*(1+jStride+kStride);
+//            x_np1 = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride);}
+//        
+        for(k=klo;k<khi;k++){
+            for(j=jlo;j<jhi;j++){
+                for(i=ilo;i<ihi;i++){
+                    int ijk = i + j*jStride + k*kStride;
+                    printf("%10.4f ", vector[ijk]);
+//                    double Ax_n = apply_op_ijk(x_n);
+//                    x_np1[ijk] = x_n[ijk] + weight*lambda[ijk]*(rhs[ijk]-Ax_n);
+                }
+                printf("\n");
+            }
+            printf("\n\n\n");
+        }
+        
+    } // box-loop
+}
 
 //------------------------------------------------------------------------------------------------------------------------------
 #ifndef BLOCK_LIST_MIN_SIZE

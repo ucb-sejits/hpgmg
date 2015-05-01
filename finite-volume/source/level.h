@@ -190,3 +190,5 @@ void append_block_to_list(blockCopy_type ** blocks, int *allocated_blocks, int *
                          );
 //------------------------------------------------------------------------------------------------------------------------------
 #endif
+
+void print_vector(level_type * level, int vector_id);

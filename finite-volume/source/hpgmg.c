@@ -182,6 +182,7 @@ int main(int argc, char **argv){
   #endif
   double h0=1.0/( (double)boxes_in_i*(double)box_dim );
   initialize_problem(&fine_grid,h0,a,b); // calculate VECTOR_ALPHA, VECTOR_BETA, and VECTOR_UTRUE
+    print_vector(&fine_grid, VECTOR_UTRUE);
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   if( ((a==0.0)||(fine_grid.alpha_is_zero==1) ) && (fine_grid.boundary_condition.type == BC_PERIODIC)){ 
     // Poisson w/ periodic BC's... 
@@ -219,7 +220,7 @@ int main(int argc, char **argv){
     #endif
 
     #ifdef USE_MPI
-    double minTime   = 30.0; // minimum time in seconds that the benchmark should run
+    double minTime   = 5.0; // minimum time in seconds that the benchmark should run
     double startTime = MPI_Wtime();
     if(doTiming==1){
       if((minTime/timePerSolve)>minSolves)minSolves=(minTime/timePerSolve); // if one needs to do more than minSolves to run for minTime, change minSolves
